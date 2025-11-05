@@ -1,0 +1,43 @@
+{
+  "name": "madestone-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^9.0.0",
+    "@nestjs/passport": "^9.0.0",
+    "@nestjs/platform-express": "^9.0.0",
+    "axios": "^1.13.2",
+    "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "cloudinary": "^2.8.0",
+    "dotenv": "^17.2.3",
+    "form-data": "^4.0.4",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.0",
+    "sqlite3": "^5.1.2",
+    "typeorm": "^0.3.12"
+  },
+  "devDependencies": {
+    "@nestjs/typeorm": "^11.0.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/node": "^18.11.9",
+    "@types/passport-jwt": "^3.0.6",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^4.9.4"
+  }
+}
