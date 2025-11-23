@@ -6,12 +6,16 @@ import { UsersModule } from "./users.module";
 import { CentersModule } from "./centers.module";
 import { StudentsModule } from "./students.module";
 import { AttendanceModule } from "./attendance.module";
+import { CoachAttendanceModule } from "./coach-attendance.module";
 import { UploadModule } from "./upload.module";
 import { User } from "../entities/user.entity";
 import { Center } from "../entities/center.entity";
 import { Student } from "../entities/student.entity";
 import { Attendance } from "../entities/attendance.entity";
+import { CoachAttendance } from "../entities/coach-attendance.entity";
 import { Payment } from "../entities/payment.entity";
+import { Preference } from "../entities/preference.entity";
+import { PreferenceModule } from "./preference.module";
 
 @Module({
   imports: [
@@ -27,7 +31,15 @@ import { Payment } from "../entities/payment.entity";
         username: configService.get("DATABASE_USERNAME"),
         password: configService.get("DATABASE_PASSWORD"),
         database: configService.get("DATABASE_NAME"),
-        entities: [User, Center, Student, Attendance, Payment],
+        entities: [
+          User,
+          Center,
+          Student,
+          Attendance,
+          CoachAttendance,
+          Payment,
+          Preference,
+        ],
         synchronize: true, // Set to false in production
       }),
       inject: [ConfigService],
@@ -37,7 +49,9 @@ import { Payment } from "../entities/payment.entity";
     CentersModule,
     StudentsModule,
     AttendanceModule,
+    CoachAttendanceModule,
     UploadModule,
+    PreferenceModule,
   ],
 })
 export class AppModule {}

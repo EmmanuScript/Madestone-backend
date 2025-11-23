@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Delete,
   UseInterceptors,
   UploadedFile,
 } from "@nestjs/common";
@@ -32,6 +33,11 @@ export class UsersController {
   @Get("coaches")
   coaches() {
     return this.users.findCoaches();
+  }
+
+  @Get("admins")
+  admins() {
+    return this.users.findAdmins();
   }
 
   @Patch(":id/active")
@@ -64,5 +70,10 @@ export class UsersController {
   )
   upload(@Param("id") id: string, @UploadedFile() file: any) {
     return { filename: file.filename };
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.users.delete(+id);
   }
 }

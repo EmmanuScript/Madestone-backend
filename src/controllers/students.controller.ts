@@ -1,5 +1,16 @@
-import { Controller, Post, Body, Get, Param, Patch } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+  Req,
+  ForbiddenException,
+} from "@nestjs/common";
 import { StudentsService } from "../services/students.service";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("students")
 export class StudentsController {
@@ -28,7 +39,14 @@ export class StudentsController {
 
   // Update student
   @Patch(":id")
-  update(@Param("id") id: string, @Body() body: any) {
+  @UseGuards(AuthGuard("jwt"))
+  update(@Req() req: any, @Param("id") id: string, @Body() body: any) {
+    const role = req.user?.role;
+    if (role !== "ADMIN" && role !== "CEO") {
+      throw new ForbiddenException(
+        "Only admin or CEO can edit student details"
+      );
+    }
     return this.students.update(+id, body);
   }
 }

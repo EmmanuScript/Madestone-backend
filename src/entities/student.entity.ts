@@ -60,4 +60,7 @@ export class Student {
 
   @Column({ nullable: true })
   cloudinaryPublicId?: string; // For deleting/replacing images
+
+  @Column({ default: true })
+  active: boolean; // Student active status
 }

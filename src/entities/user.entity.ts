@@ -9,6 +9,7 @@ import { Center } from "./center.entity";
 
 export enum UserRole {
   CEO = "CEO",
+  ADMIN = "ADMIN",
   COACH = "COACH",
 }
 
@@ -28,6 +29,15 @@ export class User {
 
   @Column({ type: "text", nullable: true })
   image?: string;
+
+  @Column({ type: "text", nullable: true })
+  imageUrl?: string;
+
+  @Column({ type: "text", nullable: true })
+  imageViewUrl?: string;
+
+  @Column({ type: "text", nullable: true })
+  cloudinaryPublicId?: string;
 
   @Column({ type: "simple-enum", enum: UserRole })
   role: UserRole;

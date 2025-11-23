@@ -10,6 +10,10 @@ export class AuthService {
   async validateUser(username: string, pass: string) {
     const user = await this.users.findByUsername(username);
     if (!user) return null;
+    if (user.active === false) {
+      // Treat inactive user as invalid login
+      return null;
+    }
     const ok = await bcrypt.compare(pass, user.password);
     if (ok) return user;
     return null;

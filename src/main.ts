@@ -7,9 +7,13 @@ import * as fs from "fs";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS for frontend
+  // Enable CORS for frontend (flexible for production)
+  const corsOrigin = process.env.NODE_ENV === "production"
+    ? process.env.FRONTEND_URL || "https://madestone-frontend-prod.railway.app"
+    : ["http://localhost:3000", "http://localhost:5001"];
+
   app.enableCors({
-    origin: "http://localhost:5001", // React app's port
+    origin: corsOrigin,
     credentials: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     allowedHeaders: "Content-Type, Accept, Authorization",
@@ -21,7 +25,7 @@ async function bootstrap() {
   const uploadsDir = __dirname + "/../uploads";
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
-  await app.listen(5000);
-  console.log("Backend listening on http://localhost:5000");
+  await app.listen(process.env.PORT || 5000);
+  console.log(`Backend listening on port ${process.env.PORT || 5000} (${process.env.NODE_ENV || "development"})`);
 }
 bootstrap();

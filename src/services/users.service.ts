@@ -29,6 +29,13 @@ export class UsersService {
     });
   }
 
+  findAdmins() {
+    return this.repo.find({
+      where: { role: UserRole.ADMIN },
+      relations: ["center"],
+    });
+  }
+
   async setActive(id: number, active: boolean) {
     await this.repo.update(id, { active });
     return this.repo.findOne({ where: { id } });
@@ -46,5 +53,10 @@ export class UsersService {
 
     await this.repo.update(id, updates);
     return this.findOne(id);
+  }
+
+  async delete(id: number) {
+    await this.repo.delete(id);
+    return { success: true };
   }
 }
