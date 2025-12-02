@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --legacy-peer-deps
+# Install dependencies with legacy peer deps to bypass conflicts
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -25,7 +25,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --omit=dev --legacy-peer-deps
+RUN npm install --omit=dev --legacy-peer-deps
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
