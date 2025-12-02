@@ -1,5 +1,5 @@
 # Use Node.js LTS version
-FROM node:18-alpine AS builder
+FROM node:18-alpine
 
 # Set working directory
 WORKDIR /app
@@ -7,32 +7,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies with legacy peer deps to bypass conflicts
+# Install all dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy source code
+# Copy entire application
 COPY . .
-
-# Build the application
-RUN npm run build
-
-# Production stage
-FROM node:18-alpine AS production
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install only production dependencies
-RUN npm install --omit=dev --legacy-peer-deps
-
-# Copy built application from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src ./src
 
 # Expose port
 EXPOSE 5000
 
-# Start the application
-CMD ["node", "dist/main.js"]
+# Start the application using ts-node
+CMD ["npx", "ts-node", "-r", "tsconfig-paths/register", "src/main.ts"]
