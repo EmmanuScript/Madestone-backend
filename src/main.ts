@@ -8,9 +8,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS for frontend (flexible for production)
-  const corsOrigin = process.env.NODE_ENV === "production"
-    ? process.env.FRONTEND_URL || "https://madestone-frontend-prod.railway.app"
-    : ["http://localhost:3000", "http://localhost:5001"];
+  const corsOrigin =
+    process.env.NODE_ENV === "production"
+      ? process.env.FRONTEND_URL ||
+        "https://madestone-frontend-prod.railway.app"
+      : ["http://localhost:3000", "http://localhost:5001"];
 
   app.enableCors({
     origin: corsOrigin,
@@ -26,6 +28,10 @@ async function bootstrap() {
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
   await app.listen(process.env.PORT || 5000);
-  console.log(`Backend listening on port ${process.env.PORT || 5000} (${process.env.NODE_ENV || "development"})`);
+  console.log(
+    `Backend listening on port ${process.env.PORT || 5000} (${
+      process.env.NODE_ENV || "development"
+    })`
+  );
 }
 bootstrap();

@@ -59,4 +59,10 @@ export class UsersService {
     await this.repo.delete(id);
     return { success: true };
   }
+
+  async changePassword(id: number, newPassword: string) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.repo.update(id, { password: hashedPassword });
+    return this.findOne(id);
+  }
 }

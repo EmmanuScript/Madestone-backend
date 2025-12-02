@@ -8,7 +8,11 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  Request,
+  ForbiddenException,
 } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { UsersService } from "../services/users.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
@@ -75,5 +79,19 @@ export class UsersController {
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.users.delete(+id);
+  }
+
+  @Patch(":id/change-password")
+  @UseGuards(AuthGuard("jwt"))
+  changePassword(
+    @Param("id") id: string,
+    @Body() body: { newPassword: string },
+    @Request() req: any
+  ) {
+    // Only CEO can change passwords
+    if (req.user?.role !== "CEO") {
+      throw new ForbiddenException("Only CEO can change user passwords");
+    }
+    return this.users.changePassword(+id, body.newPassword);
   }
 }
