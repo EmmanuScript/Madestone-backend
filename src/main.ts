@@ -14,6 +14,11 @@ async function bootstrap() {
         "https://madestone-frontend-production.up.railway.app"
       : ["http://localhost:3000", "http://localhost:5001"];
 
+  console.log("🔧 CORS Configuration:");
+  console.log("  NODE_ENV:", process.env.NODE_ENV);
+  console.log("  FRONTEND_URL:", process.env.FRONTEND_URL);
+  console.log("  Allowed origin:", corsOrigin);
+
   app.enableCors({
     origin: corsOrigin,
     credentials: true,
@@ -21,6 +26,14 @@ async function bootstrap() {
     allowedHeaders: ["Content-Type", "Accept", "Authorization"],
     preflightContinue: false,
     optionsSuccessStatus: 204,
+  });
+
+  // Log all incoming requests
+  app.use((req: any, res: any, next: any) => {
+    console.log(`📥 ${req.method} ${req.url}`);
+    console.log("  Origin:", req.headers.origin);
+    console.log("  Headers:", JSON.stringify(req.headers, null, 2));
+    next();
   });
 
   app.use(json({ limit: "10mb" }));
