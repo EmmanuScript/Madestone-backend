@@ -11,7 +11,7 @@ async function bootstrap() {
   const corsOrigin =
     process.env.NODE_ENV === "production"
       ? process.env.FRONTEND_URL ||
-        "https://madestone-frontend-prod.railway.app"
+        "https://madestone-frontend-production.up.railway.app"
       : ["http://localhost:3000", "http://localhost:5001"];
 
   app.enableCors({
