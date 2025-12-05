@@ -24,14 +24,14 @@ export class PreferenceService {
     if (sessionFee < 0) throw new Error("Session fee cannot be negative");
     const pref = await this.get();
     pref.sessionFee = sessionFee;
-    await this.prefs.save(pref);
+    const updated = await this.prefs.save(pref);
     // Bulk update all students amountDue
     await this.students
       .createQueryBuilder()
-      .update(Student)
+      .update()
       .set({ amountDue: sessionFee })
       .execute();
-    return pref;
+    return updated;
   }
 
   async setSessionName(sessionName: string) {
@@ -46,9 +46,9 @@ export class PreferenceService {
     // Reset: amountPaid = 0, amountDue = sessionFee
     await this.students
       .createQueryBuilder()
-      .update(Student)
+      .update()
       .set({ amountPaid: 0, amountDue: pref.sessionFee })
       .execute();
-    return { ok: true, preference: pref };
+    return pref;
   }
 }
