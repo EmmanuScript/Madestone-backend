@@ -1,0 +1,27 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PreferenceModule = void 0;
+const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const preference_entity_1 = require("../entities/preference.entity");
+const student_entity_1 = require("../entities/student.entity");
+const preference_service_1 = require("../services/preference.service");
+const preference_controller_1 = require("../controllers/preference.controller");
+let PreferenceModule = class PreferenceModule {
+};
+PreferenceModule = __decorate([
+    (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([preference_entity_1.Preference, student_entity_1.Student])],
+        providers: [preference_service_1.PreferenceService],
+        controllers: [preference_controller_1.PreferenceController],
+        exports: [preference_service_1.PreferenceService],
+    })
+], PreferenceModule);
+exports.PreferenceModule = PreferenceModule;
+//# sourceMappingURL=preference.module.js.map

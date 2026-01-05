@@ -53,6 +53,9 @@ export class Student {
   parentEmail?: string;
 
   @Column({ nullable: true })
+  jerseyName?: string;
+
+  @Column({ nullable: true })
   imageUrl?: string; // Public image URL (Cloudinary secure_url)
 
   @Column({ nullable: true })
