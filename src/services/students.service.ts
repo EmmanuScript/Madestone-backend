@@ -11,20 +11,32 @@ export class StudentsService {
     @InjectRepository(Payment) private payments: Repository<Payment>
   ) {}
 
-  create(data: Partial<Student>) {
-    const s = this.repo.create(data as Student);
-    return this.repo.save(s);
+  async create(data: Partial<Student>) {
+    try {
+      const s = this.repo.create(data as Student);
+      return await this.repo.save(s);
+    } catch (error) {
+      throw new Error(`Failed to create student: ${error.message}`);
+    }
   }
 
-  findAll() {
-    return this.repo.find({ relations: ["center"] });
+  async findAll() {
+    try {
+      return await this.repo.find({ relations: ["center"] });
+    } catch (error) {
+      throw new Error(`Failed to fetch students: ${error.message}`);
+    }
   }
 
-  findByCenter(centerId: number) {
-    return this.repo.find({
-      where: { center: { id: centerId } as any },
-      relations: ["center"],
-    });
+  async findByCenter(centerId: number) {
+    try {
+      return await this.repo.find({
+        where: { center: { id: centerId } as any },
+        relations: ["center"],
+      });
+    } catch (error) {
+      throw new Error(`Failed to fetch students by center: ${error.message}`);
+    }
   }
 
   async addPayment(id: number, amount: number) {
@@ -41,8 +53,12 @@ export class StudentsService {
     return { student, payment: p };
   }
 
-  findOne(id: number) {
-    return this.repo.findOne({ where: { id }, relations: ["center"] });
+  async findOne(id: number) {
+    try {
+      return await this.repo.findOne({ where: { id }, relations: ["center"] });
+    } catch (error) {
+      throw new Error(`Failed to fetch student: ${error.message}`);
+    }
   }
 
   async update(id: number, data: Partial<Student>) {
