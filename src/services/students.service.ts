@@ -40,17 +40,30 @@ export class StudentsService {
   }
 
   async addPayment(id: number, amount: number) {
-    const student = await this.repo.findOne({ where: { id } });
-    if (!student) throw new Error("Student not found");
-    student.amountPaid = (student.amountPaid || 0) + amount;
-    await this.repo.save(student);
-    const p = this.payments.create({
-      student,
-      amount,
-      date: new Date().toISOString().slice(0, 10),
-    });
-    await this.payments.save(p);
-    return { student, payment: p };
+    try {
+      const student = await this.repo.findOne({ where: { id } });
+      if (!student) {
+        throw new Error("Student not found");
+      }
+
+      if (!amount || amount <= 0) {
+        throw new Error("Invalid payment amount");
+      }
+
+      student.amountPaid = (student.amountPaid || 0) + amount;
+      await this.repo.save(student);
+
+      const p = this.payments.create({
+        student,
+        amount,
+        date: new Date().toISOString().slice(0, 10),
+      });
+      await this.payments.save(p);
+
+      return { student, payment: p };
+    } catch (error) {
+      throw new Error(`Failed to add payment: ${error.message}`);
+    }
   }
 
   async findOne(id: number) {

@@ -43,10 +43,23 @@ export class StudentsController {
   }
 
   @Patch(":id/payment")
+  @UseGuards(AuthGuard("jwt"))
   async addPayment(@Param("id") id: string, @Body() body: { amount: number }) {
     try {
-      return await this.students.addPayment(+id, body.amount);
+      console.log(
+        `Processing payment for student ${id}, amount: ${body.amount}`
+      );
+      if (!body.amount || body.amount <= 0) {
+        throw new HttpException(
+          "Invalid payment amount",
+          HttpStatus.BAD_REQUEST
+        );
+      }
+      const result = await this.students.addPayment(+id, body.amount);
+      console.log(`Payment successful for student ${id}`);
+      return result;
     } catch (error) {
+      console.error(`Payment error for student ${id}:`, error.message);
       throw new HttpException(
         error.message || "Failed to add payment",
         HttpStatus.BAD_REQUEST
