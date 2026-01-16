@@ -64,6 +64,9 @@ export class Student {
   @Column({ nullable: true })
   cloudinaryPublicId?: string; // For deleting/replacing images
 
+  @Column({ type: "text", nullable: true })
+  additionalNotes?: string; // Additional notes by CEO/Admin
+
   @Column({ default: true })
   active: boolean; // Student active status
 }
