@@ -75,26 +75,19 @@ export class StudentsService {
   }
 
   async update(id: number, data: Partial<Student>) {
-    console.log(`[StudentsService] Updating student ${id} with data:`, data);
     const student = await this.repo.findOne({ where: { id } });
     if (!student) {
-      console.error(`[StudentsService] Student ${id} not found`);
       throw new Error("Student not found");
     }
-    console.log(`[StudentsService] Found student:`, student);
 
     // Handle center relation separately
     if (data.center) {
-      console.log(`[StudentsService] Updating center relation:`, data.center);
       student.center = data.center as any;
       delete data.center;
     }
 
-    console.log(`[StudentsService] Assigning data to student:`, data);
     Object.assign(student, data);
-    console.log(`[StudentsService] Student before save:`, student);
     const result = await this.repo.save(student);
-    console.log(`[StudentsService] Student saved successfully:`, result);
     return result;
   }
 }

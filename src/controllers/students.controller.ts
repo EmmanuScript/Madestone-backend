@@ -85,25 +85,15 @@ export class StudentsController {
   @UseGuards(AuthGuard("jwt"))
   async update(@Req() req: any, @Param("id") id: string, @Body() body: any) {
     try {
-      console.log(
-        `[StudentsController] Updating student ${id} with body:`,
-        body,
-      );
       const role = req.user?.role;
-      console.log(`[StudentsController] User role: ${role}`);
       if (role !== "ADMIN" && role !== "CEO") {
         throw new ForbiddenException(
           "Only admin or CEO can edit student details",
         );
       }
       const result = await this.students.update(+id, body);
-      console.log(`[StudentsController] Update successful for student ${id}`);
       return result;
     } catch (error) {
-      console.error(
-        `[StudentsController] Error updating student ${id}:`,
-        error.message,
-      );
       if (error instanceof ForbiddenException) {
         throw error;
       }
