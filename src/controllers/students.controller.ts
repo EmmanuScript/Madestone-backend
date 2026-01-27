@@ -25,7 +25,7 @@ export class StudentsController {
     } catch (error) {
       throw new HttpException(
         error.message || "Failed to create student",
-        HttpStatus.BAD_REQUEST
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
@@ -37,7 +37,7 @@ export class StudentsController {
     } catch (error) {
       throw new HttpException(
         error.message || "Failed to fetch students",
-        HttpStatus.INTERNAL_SERVER_ERROR
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -47,12 +47,12 @@ export class StudentsController {
   async addPayment(@Param("id") id: string, @Body() body: { amount: number }) {
     try {
       console.log(
-        `Processing payment for student ${id}, amount: ${body.amount}`
+        `Processing payment for student ${id}, amount: ${body.amount}`,
       );
       if (!body.amount || body.amount <= 0) {
         throw new HttpException(
           "Invalid payment amount",
-          HttpStatus.BAD_REQUEST
+          HttpStatus.BAD_REQUEST,
         );
       }
       const result = await this.students.addPayment(+id, body.amount);
@@ -62,7 +62,7 @@ export class StudentsController {
       console.error(`Payment error for student ${id}:`, error.message);
       throw new HttpException(
         error.message || "Failed to add payment",
-        HttpStatus.BAD_REQUEST
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
@@ -75,7 +75,7 @@ export class StudentsController {
     } catch (error) {
       throw new HttpException(
         error.message || "Failed to fetch student",
-        HttpStatus.NOT_FOUND
+        HttpStatus.NOT_FOUND,
       );
     }
   }
@@ -85,20 +85,31 @@ export class StudentsController {
   @UseGuards(AuthGuard("jwt"))
   async update(@Req() req: any, @Param("id") id: string, @Body() body: any) {
     try {
+      console.log(
+        `[StudentsController] Updating student ${id} with body:`,
+        body,
+      );
       const role = req.user?.role;
+      console.log(`[StudentsController] User role: ${role}`);
       if (role !== "ADMIN" && role !== "CEO") {
         throw new ForbiddenException(
-          "Only admin or CEO can edit student details"
+          "Only admin or CEO can edit student details",
         );
       }
-      return await this.students.update(+id, body);
+      const result = await this.students.update(+id, body);
+      console.log(`[StudentsController] Update successful for student ${id}`);
+      return result;
     } catch (error) {
+      console.error(
+        `[StudentsController] Error updating student ${id}:`,
+        error.message,
+      );
       if (error instanceof ForbiddenException) {
         throw error;
       }
       throw new HttpException(
         error.message || "Failed to update student",
-        HttpStatus.BAD_REQUEST
+        HttpStatus.BAD_REQUEST,
       );
     }
   }

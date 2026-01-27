@@ -70,7 +70,7 @@ export class UsersController {
           cb(null, name);
         },
       }),
-    })
+    }),
   )
   upload(@Param("id") id: string, @UploadedFile() file: any) {
     return { filename: file.filename };
@@ -86,11 +86,13 @@ export class UsersController {
   changePassword(
     @Param("id") id: string,
     @Body() body: { newPassword: string },
-    @Request() req: any
+    @Request() req: any,
   ) {
-    // Only CEO can change passwords
-    if (req.user?.role !== "CEO") {
-      throw new ForbiddenException("Only CEO can change user passwords");
+    // Only CEO or Admin can change passwords
+    if (req.user?.role !== "CEO" && req.user?.role !== "ADMIN") {
+      throw new ForbiddenException(
+        "Only CEO or Admin can change user passwords",
+      );
     }
     return this.users.changePassword(+id, body.newPassword);
   }
