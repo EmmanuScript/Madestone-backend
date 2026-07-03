@@ -1,12 +1,18 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User, UserRole } from "../entities/user.entity";
+import { Attendance } from "../entities/attendance.entity";
+import { CoachAttendance } from "../entities/coach-attendance.entity";
 import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    @InjectRepository(Attendance) private attendanceRepo: Repository<Attendance>,
+    @InjectRepository(CoachAttendance) private coachAttendanceRepo: Repository<CoachAttendance>,
+  ) {}
 
   async findByUsername(username: string) {
     try {
@@ -22,7 +28,14 @@ export class UsersService {
   async create(user: Partial<User>) {
     if (user.password) user.password = await bcrypt.hash(user.password, 10);
     const e = this.repo.create(user as User);
-    return this.repo.save(e);
+    try {
+      return await this.repo.save(e);
+    } catch (error) {
+      if (error.code === "23505") {
+        throw new ConflictException("Username already exists");
+      }
+      throw error;
+    }
   }
 
   async findAll() {
@@ -83,6 +96,21 @@ export class UsersService {
   }
 
   async delete(id: number) {
+    // Nullify markedBy references in attendance records
+    await this.attendanceRepo
+      .createQueryBuilder()
+      .update()
+      .set({ markedBy: null })
+      .where("markedById = :id", { id })
+      .execute();
+
+    // Delete coach_attendance records for this coach or marked by this coach
+    await this.coachAttendanceRepo
+      .createQueryBuilder()
+      .delete()
+      .where("coachId = :id OR markedById = :id", { id })
+      .execute();
+
     await this.repo.delete(id);
     return { success: true };
   }
